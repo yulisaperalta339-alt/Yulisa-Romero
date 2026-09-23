@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CERO-GO | Cosapi SSOMA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cosapi: {
+                            50: '#E1F5FE',
+                            100: '#B3E5FC',
+                            400: '#4FC3F7',
+                            500: '#009FE3',
+                            600: '#0077B6',
+                            700: '#02659b',
+                            800: '#014F86'
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .carousel-container {
+            display: flex;
+            width: 500%;
+            height: 100%;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .carousel-slide {
+            width: 20%;
+            height: 100%;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-2 font-sans">
+
+    <div class="w-full max-w-md h-[92vh] max-h-[900px] bg-slate-50 rounded-[36px] border-[7px] border-slate-800 flex flex-col overflow-hidden relative shadow-2xl">
+        
+        <!-- HEADER INSTITUCIONAL -->
+        <div class="bg-gradient-to-r from-cosapi-600 to-cosapi-500 text-white px-5 pt-3 pb-3 flex items-center justify-between shrink-0 z-20 shadow-md">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-cosapi-600 font-black text-xs shadow-md">
+                    <i class="fa-solid fa-shield-halved text-cosapi-500"></i>
+                </div>
+                <div>
+                    <h1 class="text-xs font-black tracking-widest uppercase text-white">CERO-GO</h1>
+                    <p class="text-[10px] text-sky-100 font-medium">COSAPI S.A. | Módulo RACS</p>
+                </div>
+            </div>
+            <span class="bg-white/20 backdrop-blur-md text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold border border-white/30">Versión Pro</span>
+        </div>
+
+        <!-- CONTENEDOR DESLIZANTE LATERAL (CARRUSEL DE 5 VISTAS) -->
+        <main class="flex-1 overflow-hidden relative pb-16">
+            <div id="carousel" class="carousel-container">
+                
+                <!-- VISTA 0: LOGIN / INICIO -->
+                <div class="carousel-slide p-6 bg-gradient-to-b from-cosapi-700 via-cosapi-600 to-cosapi-400 text-white flex flex-col justify-between text-center">
+                    <div class="pt-4 flex flex-col items-center">
+                        <div class="bg-white/20 backdrop-blur-md px-5 py-2 rounded-2xl border border-white/30 mb-2 shadow-lg">
+                            <span class="text-xl font-black tracking-widest text-white">COSAPI</span>
+                        </div>
+                        <span class="text-[11px] font-bold tracking-wider text-sky-100 uppercase bg-black/10 px-3 py-1 rounded-full">Nuestra meta: Cero Accidentes con Integridad</span>
+                    </div>
+                    <div class="my-auto flex flex-col items-center">
+                        <div class="w-24 h-24 bg-white/15 rounded-full flex items-center justify-center mb-4 border border-white/30 shadow-xl backdrop-blur-sm">
+                            <i class="fa-solid fa-helmet-safety text-5xl text-sky-100"></i>
+                        </div>
+                        <h3 class="text-3xl font-black tracking-tight mb-1">RACS</h3>
+                        <p class="text-xs font-semibold text-sky-100 max-w-xs mx-auto">ACTOS Y CONDICIONES SUBESTÁNDARES</p>
+                    </div>
+                    <div class="pb-4">
+                        <button onclick="switchSlide(1)" class="w-full bg-white hover:bg-sky-50 text-cosapi-600 font-extrabold py-3.5 px-6 rounded-2xl shadow-xl transition transform active:scale-95 flex items-center justify-center space-x-2 text-sm border border-sky-100">
+                            <span>INGRESAR AL APLICATIVO</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <p class="text-[10px] text-sky-100 mt-2 font-medium">Tu reporte hace la diferencia</p>
+                    </div>
+                </div>
+
+                <!-- VISTA 1: REGISTRO Y MÓDULO DE CIERRE CON FOTO ANTES / DESPUÉS -->
+                <div class="carousel-slide p-4 space-y-4">
+                    <div class="bg-gradient-to-r from-cosapi-600 to-cosapi-500 p-3.5 rounded-2xl text-white shadow-sm">
+                        <h2 class="text-xs font-bold flex items-center uppercase tracking-wide">
+                            <i class="fa-solid fa-triangle-exclamation mr-2 text-amber-300"></i> Nuevo Reporte de Acto / Condición
+                        </h2>
+                        <p class="text-[11px] text-sky-100 mt-0.5">Complete los datos para disparar la alerta automática inmediata.</p>
+                    </div>
+
+                    <form onsubmit="handleFormSubmit(event)" class="space-y-3.5 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-xs">
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">PROYECTO <span class="text-red-500">*</span></label>
+                            <select id="input-proyecto" class="w-full bg-sky-50/50 border border-slate-300 rounded-xl p-2.5 font-semibold text-slate-800" required>
+                                <option value="">Seleccione proyecto...</option>
+                                <option value="MIDGO">MIDGO</option>
+                                <option value="BOSQO">BOSQO</option>
+                                <option value="PAZEA">PAZEA</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Reportante <span class="text-red-500">*</span></label>
+                                <input type="text" id="input-reportante" value="Yulisa Peralta" class="w-full bg-sky-50/50 border border-slate-300 rounded-xl p-2.5" required>
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Cargo (Automático)</label>
+                                <input type="text" id="input-cargo" value="ASISTENTE SSOMA" readonly class="w-full bg-slate-100 border border-slate-200 rounded-xl p-2.5 text-slate-600 font-medium">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Piso / Nivel <span class="text-red-500">*</span></label>
+                                <input type="text" id="input-piso" placeholder="Ej. Piso 4" class="w-full bg-sky-50/50 border border-slate-300 rounded-xl p-2.5" required>
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Sector / Área <span class="text-red-500">*</span></label>
+                                <input type="text" id="input-sector" placeholder="Ej. Sector B" class="w-full bg-sky-50/50 border border-slate-300 rounded-xl p-2.5" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Empresa Reportada</label>
+                            <select id="input-empresa" class="w-full bg-sky-50/50 border border-slate-300 rounded-xl p-2.5">
+                                <option value="2MVA">2MVA</option><option value="AB TOPOGRAFIA">AB TOPOGRAFIA</option><option value="AE&R">AE&R</option><option value="ALL CENTER">ALL CENTER</option><option value="ANCELSA ELEVADOR">ANCELSA ELEVADOR</option><option value="ASM">ASM</option><option value="AYS">AYS</option><option value="CAPIA">CAPIA</option><option value="CAPIA ANDAMIOS COLGANTES">CAPIA ANDAMIOS COLGANTES</option><option value="CONTRUREDES">CONTRUREDES</option><option value="COSMO">COSMO</option><option value="DHB">DHB</option><option value="ESCOBELL">ESCOBELL</option><option value="HUERTAS">HUERTAS</option><option value="INFINITI">INFINITI</option><option value="ITEC">ITEC</option><option value="JEF - MIDGO">JEF - MIDGO</option><option value="MOLVIART">MOLVIART</option><option value="MSO">MSO</option><option value="PRODESTEL">PRODESTEL</option><option value="ROHEL">ROHEL</option><option value="ROHEL PARTIDA ACABADOS">ROHEL PARTIDA ACABADOS</option><option value="SELLO CORTA FUEGO">SELLO CORTA FUEGO</option><option value="SISTEMA Y FLUIDOS">SISTEMA Y FLUIDOS</option><option value="VILA LADRILLO">VILA LADRILLO</option><option value="YIVEI">YIVEI</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Tipo de Registro</label>
+                                <select id="racs-type" onchange="updateCatalogs()" class="w-full bg-sky-50/50 border border-slate-300 rounded-xl p-2.5 font-bold text-cosapi-600">
+                                    <option value="acto">Acto Subestándar</option>
+                                    <option value="condicion">Condición Subestándar</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-1">Clasificación Específica</label>
+                                <select id="racs-catalog" class="w-full bg-sky-50/50 border border-slate-300 rounded-xl p-2.5"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Nivel de Riesgo <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setRisk('Alto')" id="btn-Alto" class="risk-btn border-2 border-red-500 bg-red-50 text-red-700 font-bold py-2 rounded-xl transition shadow-sm">ALTO</button>
+                                <button type="button" onclick="setRisk('Medio')" id="btn-Medio" class="risk-btn border-2 border-slate-200 bg-slate-50 text-slate-700 font-semibold py-2 rounded-xl transition">MEDIO</button>
+                                <button type="button" onclick="setRisk('Bajo')" id="btn-Bajo" class="risk-btn border-2 border-slate-200 bg-slate-50 text-slate-700 font-semibold py-2 rounded-xl transition">BAJO</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Descripción Detallada <span class="text-red-500">*</span></label>
+                            <textarea id="input-desc" rows="2" placeholder="Detalle claro y puntual..." class="w-full bg-sky-50/50 border border-slate-300 rounded-xl p-2.5" required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-cosapi-600 to-cosapi-500 text-white font-extrabold py-3 rounded-xl shadow-md text-xs">
+                            REGISTRAR NUEVO RACS
+                        </button>
+                    </form>
+
+                    <!-- MÓDULO DE CIERRE CON FOTO ANTES Y DESPUÉS -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <h3 class="font-black text-slate-800 text-xs uppercase"><i class="fa-solid fa-list-check text-cosapi-500 mr-1.5"></i> Módulo de Cierre de RACS</h3>
+                            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full">Pendientes: <span id="count-abiertos">1</span></span>
+                        </div>
+                        <div id="lista-reportes-activos" class="space-y-3">
+                            <div class="bg-slate-50 p-3 rounded-xl border-l-4 border-red-500 border border-slate-200 space-y-2 text-xs">
+                                <div class="flex justify-between items-center"><span class="font-bold text-slate-800">RACS #042 - MIDGO</span><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold text-[10px]">ALTO</span></div>
+                                <p class="text-slate-600"><b>Empresa:</b> 2MVA | <b>Ubicación:</b> Piso 3 - Sector A</p>
+                                <p class="text-slate-600"><b>Hallazgo:</b> Uso inapropiado de EPP (Sin arnés en altura).</p>
+                                <div class="bg-white p-2.5 rounded-xl border space-y-2 mt-1">
+                                    <input type="text" placeholder="Plan de acción ejecutado para cierre..." class="w-full bg-slate-50 border rounded-lg p-1.5 text-xs">
+                                    
+                                    <div class="grid grid-cols-2 gap-2 pt-1">
+                                        <div class="border border-dashed border-slate-300 rounded-lg p-2 text-center relative bg-slate-50">
+                                            <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                            <span class="text-[9px] font-bold text-slate-600 block"><i class="fa-solid fa-camera text-rose-500"></i> Foto ANTES</span>
+                                        </div>
+                                        <div class="border border-dashed border-slate-300 rounded-lg p-2 text-center relative bg-slate-50">
+                                            <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                            <span class="text-[9px] font-bold text-slate-600 block"><i class="fa-solid fa-camera text-emerald-500"></i> Foto DESPUÉS</span>
+                                        </div>
+                                    </div>
+
+                                    <button onclick="closeRacsItem(this)" class="w-full bg-emerald-600 text-white font-bold py-1.5 rounded-lg text-xs shadow-sm">Validar y Cerrar RACS</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA 2: CUMPLIMIENTO DEL STAFF -->
+                <div class="carousel-slide p-4 space-y-4">
+                    <div class="bg-gradient-to-r from-cosapi-600 to-cosapi-500 p-3.5 rounded-2xl text-white shadow-sm flex justify-between items-center">
+                        <div>
+                            <h2 class="text-xs font-bold uppercase tracking-wide">Cumplimiento del STAFF</h2>
+                            <p class="text-[11px] text-sky-100">Quién realizó dentro del plazo y quiénes no.</p>
+                        </div>
+                        <span class="bg-white/20 px-2.5 py-1 rounded-lg text-[10px] font-bold">Sept 2026</span>
+                    </div>
+
+                    <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2.5 text-xs">
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">JUAN PABLO HUAMANI</p><p class="text-[9px] text-slate-500">ING. INSTALACIONES</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-cosapi-600">6</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">8</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-lg">75%</span></div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">CINTHIA ANILU RODRIGUEZ</p><p class="text-[9px] text-slate-500">ARQ. ACABADOS</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-cosapi-600">6</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">16</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-1 rounded-lg">38%</span></div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">KATHERINE JULISSA ALFARO</p><p class="text-[9px] text-slate-500">ING. DE CALIDAD</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-cosapi-600">14</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">28</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-lg">50%</span></div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">JESÚS BRAULIO SOTOMAYOR</p><p class="text-[9px] text-slate-500">JEFE DE OT</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-cosapi-600">6</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">28</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-1 rounded-lg">21%</span></div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">DANNY DANIEL SANTILLAN</p><p class="text-[9px] text-slate-500">JEFE DE ALMACÉN</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-cosapi-600">12</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">16</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-lg">75%</span></div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">JUSTER JANCARLO SANDOVAL</p><p class="text-[9px] text-slate-500">ADM DE PROYECTO</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-cosapi-600">11</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">16</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-lg">69%</span></div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">HENRY WILLIAM MACHADO</p><p class="text-[9px] text-slate-500">JEFE SSOMA MIDGO</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-rose-600">0</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">4</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-1 rounded-lg">0%</span></div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">ROLANDO GUSTAVO GARCIA</p><p class="text-[9px] text-slate-500">RESIDENTE DE OBRA</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-cosapi-600">6</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">28</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-rose-100 text-rose-700 text-[10px] font-bold px-2 py-1 rounded-lg">21%</span></div>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                            <div class="w-2/5"><p class="font-bold text-slate-800 text-[11px]">KATERIN CORDERO</p><p class="text-[9px] text-slate-500">ASISTENTE CALIDAD</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Ejecutados</span><p class="font-black text-cosapi-600">11</p></div>
+                            <div class="text-center w-1/5"><span class="text-slate-500 text-[10px]">Meta</span><p class="font-bold text-slate-700">16</p></div>
+                            <div class="w-1/5 text-right"><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-lg">69%</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA 3: GRÁFICOS EXTENDIDOS Y LISTA DE REPETIDOS -->
+                <div class="carousel-slide p-4 space-y-4">
+                    <div class="bg-gradient-to-r from-cosapi-600 to-cosapi-500 p-3.5 rounded-2xl text-white shadow-sm flex justify-between items-center">
+                        <div>
+                            <h2 class="text-xs font-bold uppercase tracking-wide">Reporte Gráfico RACS</h2>
+                            <p class="text-[11px] text-sky-100">MIDGO | BOSQO | PAZEA</p>
+                        </div>
+                        <button onclick="toggleGrafico()" id="btn-toggle" class="bg-white text-cosapi-600 px-2.5 py-1 rounded-lg text-[10px] font-black shadow">Ver Condiciones</button>
+                    </div>
+
+                    <!-- Gráfico Actos Extendido -->
+                    <div id="grafico-actos" class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2 text-xs">
+                        <h3 class="font-bold text-slate-800 border-b pb-1">Actos Subestándar (Detalle Ampliado)</h3>
+                        <div class="space-y-1.5 text-[11px]">
+                            <div>
+                                <div class="flex justify-between text-slate-600 text-[10px]"><span>7. Uso inapropiado de EPP</span><span class="font-bold">18</span></div>
+                                <div class="w-full bg-slate-100 h-2 rounded-md overflow-hidden"><div class="bg-cosapi-500 h-full" style="width: 90%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-slate-600 text-[10px]"><span>16. Falla en seguir procedimientos</span><span class="font-bold">14</span></div>
+                                <div class="w-full bg-slate-100 h-2 rounded-md overflow-hidden"><div class="bg-cosapi-500 h-full" style="width: 70%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-slate-600 text-[10px]"><span>1. Manejo de equipo sin autorización</span><span class="font-bold">9</span></div>
+                                <div class="w-full bg-slate-100 h-2 rounded-md overflow-hidden"><div class="bg-cosapi-500 h-full" style="width: 45%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-slate-600 text-[10px]"><span>11. Posición para tarea inapropiada</span><span class="font-bold">7</span></div>
+                                <div class="w-full bg-slate-100 h-2 rounded-md overflow-hidden"><div class="bg-cosapi-500 h-full" style="width: 35%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico Condiciones Extendido -->
+                    <div id="grafico-condiciones" class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2 text-xs hidden">
+                        <h3 class="font-bold text-slate-800 border-b pb-1">Condiciones Subestándar (Detalle Ampliado)</h3>
+                        <div class="space-y-1.5 text-[11px]">
+                            <div>
+                                <div class="flex justify-between text-slate-600 text-[10px]"><span>7. Desorden y aseo deficiente</span><span class="font-bold text-rose-600">45</span></div>
+                                <div class="w-full bg-slate-100 h-2 rounded-md overflow-hidden"><div class="bg-rose-500 h-full" style="width: 95%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-slate-600 text-[10px]"><span>5. Sistemas de advertencia inadecuados</span><span class="font-bold text-amber-600">22</span></div>
+                                <div class="w-full bg-slate-100 h-2 rounded-md overflow-hidden"><div class="bg-amber-500 h-full" style="width: 50%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-slate-600 text-[10px]"><span>3. Herramientas defectuosas</span><span class="font-bold text-amber-600">16</span></div>
+                                <div class="w-full bg-slate-100 h-2 rounded-md overflow-hidden"><div class="bg-amber-500 h-full" style="width: 35%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LISTA DE HALLAZGOS REPETIDOS / TENDENCIAS -->
+                    <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2 text-xs">
+                        <h3 class="font-bold text-slate-800 border-b pb-1 flex items-center">
+                            <i class="fa-solid fa-repeat text-cosapi-500 mr-1.5"></i> Lista de Hallazgos Repetidos (Tendencias)
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="bg-amber-50 border border-amber-200 p-2 rounded-xl flex justify-between items-center text-[11px]">
+                                <div>
+                                    <span class="font-bold text-amber-900 block">Falta de orden y limpieza</span>
+                                    <span class="text-[9px] text-amber-700">Empresa: 2MVA (Sector B)</span>
+                                </div>
+                                <span class="bg-amber-200 text-amber-900 font-bold px-2 py-0.5 rounded text-[10px]">14 veces</span>
+                            </div>
+                            <div class="bg-rose-50 border border-rose-200 p-2 rounded-xl flex justify-between items-center text-[11px]">
+                                <div>
+                                    <span class="font-bold text-rose-900 block">Uso inapropiado de EPP</span>
+                                    <span class="text-[9px] text-rose-700">Empresa: ROHEL (Torre Principal)</span>
+                                </div>
+                                <span class="bg-rose-200 text-rose-900 font-bold px-2 py-0.5 rounded text-[10px]">11 veces</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA 4: PIRÁMIDE FRANK BIRD (CORREGIDA A 600) & CHATBOT COSAPÍN -->
+                <div class="carousel-slide p-4 space-y-4">
+                    <div class="bg-gradient-to-r from-cosapi-600 to-cosapi-500 p-3.5 rounded-2xl text-white shadow-sm">
+                        <h2 class="text-xs font-bold uppercase tracking-wide">Pirámide Frank Bird & Chatbot</h2>
+                    </div>
+
+                    <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 space-y-2 text-xs">
+                        <h3 class="font-bold text-slate-800">Pirámide Frank Bird (Automatizada)</h3>
+                        <div class="flex flex-col items-center space-y-1 my-2 select-none">
+                            <div class="w-1/4 bg-red-600 text-white text-[10px] font-bold py-1 text-center rounded-t-md shadow">1 Accidente Grave</div>
+                            <div class="w-2/5 bg-orange-500 text-white text-[10px] font-bold py-1 text-center shadow">10 Accidentes Leves</div>
+                            <div class="w-3/5 bg-amber-400 text-slate-900 text-[10px] font-bold py-1 text-center shadow">30 Incidentes sin Lesión</div>
+                            <div class="w-full bg-cosapi-500 text-white text-xs font-bold py-1.5 text-center rounded-b-md shadow">600 Actos o Condiciones Inseguras</div>
+                        </div>
+                        <div class="bg-red-500 text-white text-center text-[10px] font-bold py-1.5 px-3 rounded-xl animate-pulse shadow-sm">
+                            ⚠️ Alerta: El acumulado supera los 600 reportes base. Reforzar inspecciones preventivas.
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex flex-col h-56 text-xs">
+                        <h3 class="font-bold text-slate-800 mb-2 flex items-center">
+                            <i class="fa-solid fa-robot mr-1.5 text-cosapi-500"></i> Chatbot "Cosapín" (Asistente IA)
+                        </h3>
+                        <div id="chat-messages" class="flex-1 overflow-y-auto space-y-2 pr-1 text-[11px]">
+                            <div class="bg-sky-50 text-slate-700 p-2.5 rounded-xl border border-sky-100">
+                                ¡Hola! Soy <b>Cosapín</b>, tu asistente SSOMA. Pregúntame sobre capacitaciones, orden y limpieza o seguimiento gerencial.
+                            </div>
+                        </div>
+                        <form onsubmit="handleChat(event)" class="flex items-center space-x-1 mt-2 pt-2 border-t border-slate-100">
+                            <input type="text" id="chat-input" placeholder="Pregúntale a Cosapín..." class="flex-1 bg-sky-50/50 border rounded-xl px-2.5 py-1 text-xs focus:outline-none">
+                            <button type="submit" class="bg-cosapi-500 text-white px-3 py-1 rounded-xl text-xs"><i class="fa-solid fa-paper-plane"></i></button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+        <nav class="absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 h-16 flex items-center justify-around px-1 z-30 shadow-2xl">
+            <button onclick="switchSlide(1)" id="nav-1" class="flex flex-col items-center justify-center text-cosapi-500 flex-1 py-1 transition-all">
+                <i class="fa-solid fa-file-pen text-sm mb-0.5"></i><span class="text-[9px] font-bold">1. Registro</span>
+            </button>
+            <button onclick="switchSlide(2)" id="nav-2" class="flex flex-col items-center justify-center text-slate-400 hover:text-cosapi-500 flex-1 py-1 transition-all">
+                <i class="fa-solid fa-users text-sm mb-0.5"></i><span class="text-[9px] font-medium">2. Staff RACS</span>
+            </button>
+            <button onclick="switchSlide(3)" id="nav-3" class="flex flex-col items-center justify-center text-slate-400 hover:text-cosapi-500 flex-1 py-1 transition-all">
+                <i class="fa-solid fa-chart-bar text-sm mb-0.5"></i><span class="text-[9px] font-medium">3. Gráficos</span>
+            </button>
+            <button onclick="switchSlide(4)" id="nav-4" class="flex flex-col items-center justify-center text-slate-400 hover:text-cosapi-500 flex-1 py-1 transition-all">
+                <i class="fa-solid fa-robot text-sm mb-0.5"></i><span class="text-[9px] font-medium">4. Cosapín</span>
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        const actosList = [
+            "1. Manejo de equipo sin autorización", "2. Falla en advertir/comunicar", "3. Falla de asegurar",
+            "4. Manejo a velocidad inadecuada", "5. Hacer inoperables instrumentos de seguridad", "6. Uso de equipo defectuoso",
+            "7. Uso inapropiado de EPP", "8. Carga inapropiada", "9. Colocación inapropiada", "10. Izaje inapropiado",
+            "11. Posición para tarea inapropiada", "12. Revisar equipo en funcionamiento", "13. Comportamiento inapropiado",
+            "14. Bajo influencia de alcohol/drogas", "15. Uso inapropiado del equipo", "16. Falla en seguir procedimientos",
+            "17. No identificar peligros y riesgos", "18. Falla de revisión y monitoreo", "19. Falla de análisis correctivo",
+            "20. Falta de comunicación y coordinación", "21. Otros"
+        ];
+
+        const condicionesList = [
+            "1. Protecciones y barreras inadecuadas", "2. Protección inadecuada de equipos", "3. Herramientas defectuosas",
+            "4. Área congestionada o restringida", "5. Sistemas de advertencia inadecuados", "6. Peligro de explosión o incendio",
+            "7. Desorden y aseo deficiente", "8. Exposición al ruido", "9. Exposición a radiación", "10. Temperaturas extremas",
+            "11. Iluminación inadecuada", "12. Ventilación inadecuada", "13. Materiales peligrosos", "14. Procedimientos inadecuados",
+            "15. Información insuficiente", "16. Planeamiento inadecuado", "17. Apoyo insuficiente", "18. Comunicación deficiente",
+            "19. Condiciones deficientes de vías", "20. Condiciones climáticas adversas", "21. Otros"
+        ];
+
+        function updateCatalogs() {
+            const type = document.getElementById('racs-type').value;
+            const select = document.getElementById('racs-catalog');
+            select.innerHTML = '';
+            const items = type === 'acto' ? actosList : condicionesList;
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                select.appendChild(opt);
+            });
+        }
+
+        window.onload = function() {
+            updateCatalogs();
+        };
+
+        function switchSlide(index) {
+            const carousel = document.getElementById('carousel');
+            carousel.style.transform = `translateX(-${index * 20}%)`;
+
+            for(let i = 1; i <= 4; i++) {
+                const nav = document.getElementById(`nav-${i}`);
+                if(nav) {
+                    if(i === index) {
+                        nav.className = "flex flex-col items-center justify-center text-cosapi-500 flex-1 py-1 font-bold transition-all";
+                    } else {
+                        nav.className = "flex flex-col items-center justify-center text-slate-400 hover:text-cosapi-500 flex-1 py-1 transition-all";
+                    }
+                }
+            }
+        }
+
+        function setRisk(level) {
+            ['Alto', 'Medio', 'Bajo'].forEach(l => {
+                const btn = document.getElementById(`btn-${l}`);
+                btn.className = "risk-btn border-2 border-slate-200 bg-slate-50 text-slate-700 font-semibold py-2 rounded-xl transition";
+            });
+            const active = document.getElementById(`btn-${level}`);
+            if(level === 'Alto') active.className = "risk-btn border-2 border-red-500 bg-red-50 text-red-700 font-bold py-2 rounded-xl transition shadow-sm";
+            if(level === 'Medio') active.className = "risk-btn border-2 border-amber-500 bg-amber-50 text-amber-700 font-bold py-2 rounded-xl transition shadow-sm";
+            if(level === 'Bajo') active.className = "risk-btn border-2 border-emerald-500 bg-emerald-50 text-emerald-700 font-bold py-2 rounded-xl transition shadow-sm";
+        }
+
+        let isActos = true;
+        function toggleGrafico() {
+            isActos = !isActos;
+            document.getElementById('grafico-actos').classList.toggle('hidden', !isActos);
+            document.getElementById('grafico-condiciones').classList.toggle('hidden', isActos);
+            document.getElementById('btn-toggle').textContent = isActos ? "Ver Condiciones" : "Ver Actos";
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const proyecto = document.getElementById('input-proyecto').value;
+            const empresa = document.getElementById('input-empresa').value;
+            const piso = document.getElementById('input-piso').value;
+            const sector = document.getElementById('input-sector').value;
+            const desc = document.getElementById('input-desc').value;
+
+            const lista = document.getElementById('lista-reportes-activos');
+            const nuevoId = Math.floor(Math.random() * 900) + 100;
+            
+            const itemHTML = `
+                <div class="bg-slate-50 p-3 rounded-xl border-l-4 border-red-500 border border-slate-200 space-y-2 text-xs">
+                    <div class="flex justify-between items-center"><span class="font-bold text-slate-800">RACS #${nuevoId} - ${proyecto}</span><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-bold text-[10px]">ALTO</span></div>
+                    <p class="text-slate-600"><b>Empresa:</b> ${empresa} | <b>Ubicación:</b> ${piso} - ${sector}</p>
+                    <p class="text-slate-600"><b>Hallazgo:</b> ${desc}</p>
+                    <div class="bg-white p-2.5 rounded-xl border space-y-2 mt-1">
+                        <input type="text" placeholder="Plan de acción ejecutado para cierre..." class="w-full bg-slate-50 border rounded-lg p-1.5 text-xs">
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <div class="border border-dashed border-slate-300 rounded-lg p-2 text-center relative bg-slate-50">
+                                <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                <span class="text-[9px] font-bold text-slate-600 block"><i class="fa-solid fa-camera text-rose-500"></i> Foto ANTES</span>
+                            </div>
+                            <div class="border border-dashed border-slate-300 rounded-lg p-2 text-center relative bg-slate-50">
+                                <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                                <span class="text-[9px] font-bold text-slate-600 block"><i class="fa-solid fa-camera text-emerald-500"></i> Foto DESPUÉS</span>
+                            </div>
+                        </div>
+                        <button onclick="closeRacsItem(this)" class="w-full bg-emerald-600 text-white font-bold py-1.5 rounded-lg text-xs shadow-sm">Validar y Cerrar RACS</button>
+                    </div>
+                </div>
+            `;
+            lista.insertAdjacentHTML('afterbegin', itemHTML);
+
+            let abiertosElem = document.getElementById('count-abiertos');
+            abiertosElem.innerText = parseInt(abiertosElem.innerText) + 1;
+
+            alert("¡RACS registrado con éxito para " + proyecto + "! Añadido a la bandeja de cierre inferior.");
+            document.querySelector('form').reset();
+            setRisk('Alto');
+        }
+
+        function closeRacsItem(btn) {
+            alert("¡RACS cerrado y validado con éxito!");
+            btn.closest('.bg-slate-50').remove();
+            let abiertosElem = document.getElementById('count-abiertos');
+            abiertosElem.innerText = Math.max(0, parseInt(abiertosElem.innerText) - 1);
+        }
+
+        function handleChat(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const txt = input.value.trim();
+            if(!txt) return;
+            const chat = document.getElementById('chat-messages');
+            chat.innerHTML += `<div class="bg-cosapi-500 text-white p-2 rounded-xl text-right ml-6">${txt}</div>`;
+            input.value = '';
+            setTimeout(() => {
+                let respuesta = "Recomendación de Cosapín: Para los proyectos MIDGO, BOSQO y PAZEA, es fundamental realizar capacitaciones preventivas constantes al personal, asegurar el orden y la limpieza diaria en campo, y mantener el seguimiento activo de la alta dirección.";
+                
+                const query = txt.toLowerCase();
+                if(query.includes('capacitacion') || query.includes('capacitaciones') || query.includes('charlas')) {
+                    respuesta = "Recomendación de Cosapín: Programar capacitaciones obligatorias de 5 minutos y reforzar el uso correcto de EPP en las subcontratistas.";
+                } else if(query.includes('orden') || query.includes('limpieza')) {
+                    respuesta = "Recomendación de Cosapín: Realizar campañas semanales de orden y limpieza, liberando accesos y zonas críticas.";
+                } else if(query.includes('direccion') || query.includes('gerencia') || query.includes('alta')) {
+                    respuesta = "Recomendación de Cosapín: Asegurar el reporte ejecutivo al comité gerencial para garantizar el seguimiento de la alta dirección en los cierres pendientes.";
+                }
+
+                chat.innerHTML += `<div class="bg-sky-50 text-slate-700 p-2.5 rounded-xl border border-sky-100 mr-6"><b>Cosapín:</b> ${respuesta}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
+        }
+    </script>
+</body>
+</html>
