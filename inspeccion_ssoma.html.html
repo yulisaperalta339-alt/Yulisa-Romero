@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSAPI - SSOMA Asistente</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS para Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- jsPDF para PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cosapi: {
+                            primary: '#0284C7',
+                            dark: '#0369A1',
+                            light: '#E0F2FE'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-100 font-sans text-gray-800 flex flex-col h-screen justify-between">
+
+    <!-- CABECERA INSTITUCIONAL -->
+    <header class="bg-cosapi-primary text-white p-3 shadow-md z-10 flex justify-between items-center border-b-4 border-cosapi-dark">
+        <div>
+            <h1 class="font-bold text-sm tracking-wide">COSAPI S.A.</h1>
+            <p class="text-[10px] text-sky-100">Registro de Inspección SSOMA</p>
+        </div>
+        <span id="contadorBadge" class="bg-cosapi-dark text-xs px-2 py-0.5 rounded-full font-bold">0 Ítems</span>
+    </header>
+
+    <!-- ÁREA DE CHAT -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="flex items-start gap-2">
+            <div class="bg-cosapi-primary text-white rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0">🛡️</div>
+            <div class="bg-white p-3 rounded-2xl shadow-sm text-xs max-w-[80%] space-y-1 border border-sky-100">
+                <p class="font-bold text-cosapi-dark">Hola, Inspector de SSOMA</p>
+                <p>Completa tus datos, selecciona el nivel de riesgo, dicta 🎤 o escribe tu observación[cite: 1], adjunta la foto y presiona enviar 🚀.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- PANEL DE CONFIGURACIÓN OFICIAL -->
+    <div class="bg-white border-t border-gray-200 p-3 text-xs space-y-2 shadow-sm">
+        <div class="grid grid-cols-4 gap-1 items-center bg-gray-50 p-1.5 rounded border">
+            <span class="font-bold text-[10px] text-gray-600 col-span-1">Resp. Inspección:</span>
+            <span class="text-[11px] font-semibold text-gray-800 col-span-1">Marco Antonio del Pino</span>
+            <span class="font-bold text-[10px] text-gray-600">Cargo:</span>
+            <span class="text-[11px] font-semibold text-gray-800">Gerente de SSOMA</span>
+        </div>
+
+        <div class="grid grid-cols-4 gap-1 items-center bg-sky-50/50 p-1.5 rounded border border-sky-200">
+            <span class="font-bold text-[10px] text-sky-900 col-span-1">Resp. Levantamiento[cite: 2]:</span>
+            <input type="text" id="respLevantamiento" placeholder="Escribir..." class="p-1 border rounded bg-white text-[11px] col-span-1 focus:ring-1 focus:ring-cosapi-primary">
+            <span class="font-bold text-[10px] text-sky-900">Cargo[cite: 2]:</span>
+            <input type="text" id="cargoLevantamiento" placeholder="Escribir..." class="p-1 border rounded bg-white text-[11px] focus:ring-1 focus:ring-cosapi-primary">
+        </div>
+
+        <div class="grid grid-cols-3 gap-1 items-center">
+            <div>
+                <label class="block font-bold text-[9px] text-gray-500">Tipo de inspección:</label>
+                <select id="tipoInspeccion" class="w-full p-1 border rounded bg-white text-[10px]">
+                    <option>Planificada[cite: 2]</option>
+                    <option>No planificada[cite: 2]</option>
+                </select>
+            </div>
+            <div>
+                <label class="block font-bold text-[9px] text-gray-500">Fecha (Automático)[cite: 2]:</label>
+                <input type="date" id="fechaInspeccion" class="w-full p-1 border rounded bg-gray-100 text-[10px]" readonly>
+            </div>
+            <div>
+                <label class="block font-bold text-[9px] text-gray-500">Hora (Automático)[cite: 2]:</label>
+                <input type="time" id="horaInspeccion" class="w-full p-1 border rounded bg-gray-100 text-[10px]" readonly>
+            </div>
+        </div>
+
+        <div class="flex gap-1 items-center">
+            <span class="font-bold text-[10px] text-sky-900">Lugar[cite: 2]:</span>
+            <input type="text" id="lugarObra" placeholder="Escribir lugar de inspección..." class="flex-1 p-1.5 border rounded bg-sky-50/50 text-[11px] border-sky-200 focus:ring-1 focus:ring-cosapi-primary">
+        </div>
+    </div>
+
+    <!-- PANEL DE ENTRADA CON NIVEL DE RIESGO Y AUDIO -->
+    <div class="bg-white border-t border-gray-300 p-3 shadow-lg z-10 space-y-2">
+        <!-- Selector de Nivel de Riesgo -->
+        <div class="flex items-center gap-2 bg-sky-50 p-1.5 rounded-lg border border-sky-100">
+            <span class="text-[11px] font-bold text-sky-900">Nivel de Riesgo:</span>
+            <select id="inputRiesgo" class="flex-1 p-1 border rounded text-xs bg-white font-semibold">
+                <option value="Bajo" class="text-green-600">🟢 Bajo</option>
+                <option value="Medio" class="text-amber-600">🟡 Medio</option>
+                <option value="Alto" class="text-red-600">🔴 Alto</option>
+            </select>
+        </div>
+
+        <div class="flex gap-2 items-center">
+            <textarea id="inputDesc" rows="2" placeholder="Escribe o dicta la descripción de la observación..." class="flex-1 p-2 border rounded-xl text-xs focus:ring-2 focus:ring-cosapi-primary resize-none"></textarea>
+            
+            <!-- Botón de Voz -->
+            <button id="btnVoice" onclick="toggleVoiceRecognition()" type="button" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-xl flex items-center justify-center text-base border transition" title="Dictar por voz">
+                🎤
+            </button>
+
+            <!-- Botón de Foto -->
+            <label class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-xl cursor-pointer flex items-center justify-center text-base border">
+                📷
+                <input type="file" id="inputFoto" accept="image/*" capture="environment" class="hidden">
+            </label>
+
+            <!-- Botón Enviar -->
+            <button onclick="registrarObservacion()" class="bg-cosapi-primary active:bg-cosapi-dark text-white p-3 rounded-xl font-bold text-sm shadow transition flex items-center justify-center" title="Enviar / Registrar">
+                🚀
+            </button>
+        </div>
+
+        <div class="flex justify-between items-center text-[10px]">
+            <span id="voiceStatus" class="text-gray-400 font-semibold">🎙️ Micrófono inactivo</span>
+            <span id="fileIndicator" class="text-cosapi-primary font-semibold hidden">📎 Foto adjuntada</span>
+        </div>
+
+        <!-- BOTONES DE DESCARGA -->
+        <div class="flex gap-2 pt-1 border-t border-gray-100">
+            <button onclick="exportarExcel()" class="flex-1 bg-emerald-700 active:bg-emerald-800 text-white py-2 px-3 rounded-xl font-bold text-xs shadow flex items-center justify-center gap-1">
+                📊 Descargar Excel
+            </button>
+            <button onclick="exportarPDF()" class="flex-1 bg-red-700 active:bg-red-800 text-white py-2 px-3 rounded-xl font-bold text-xs shadow flex items-center justify-center gap-1">
+                📄 Descargar PDF
+            </button>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const hoy = new Date();
+            document.getElementById('fechaInspeccion').value = hoy.toISOString().split('T')[0];
+            document.getElementById('horaInspeccion').value = hoy.toTimeString().substring(0,5);
+        };
+
+        let observacionesRegistradas = [];
+        let fotoActualBase64 = "";
+
+        document.getElementById('inputFoto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    fotoActualBase64 = uploadEvent.target.result;
+                    const indicator = document.getElementById('fileIndicator');
+                    indicator.style.display = "block";
+                    indicator.innerText = "📎 " + file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Configuración de Voz
+        let recognition;
+        let isRecording = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'es-PE';
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = function() {
+                isRecording = true;
+                document.getElementById('voiceStatus').innerText = "🔴 Escuchando... Habla ahora";
+                document.getElementById('voiceStatus').className = "text-red-600 font-bold animate-pulse";
+                document.getElementById('btnVoice').classList.add('bg-red-100', 'border-red-400');
+            };
+
+            recognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                document.getElementById('inputDesc').value = transcript;
+            };
+
+            recognition.onerror = function() { detenerVoz(); };
+            recognition.onend = function() { detenerVoz(); };
+        } else {
+            document.getElementById('voiceStatus').innerText = "⚠️ Voz no compatible con este navegador";
+        }
+
+        function toggleVoiceRecognition() {
+            if (!recognition) {
+                alert("Usa Google Chrome en tu celular para el dictado por voz.");
+                return;
+            }
+            if (isRecording) { recognition.stop(); } else { recognition.start(); }
+        }
+
+        function detenerVoz() {
+            isRecording = false;
+            document.getElementById('voiceStatus').innerText = "🎙️ Micrófono inactivo";
+            document.getElementById('voiceStatus').className = "text-gray-400 font-semibold";
+            document.getElementById('btnVoice').classList.remove('bg-red-100', 'border-red-400');
+        }
+
+        function registrarObservacion() {
+            if (isRecording && recognition) { recognition.stop(); }
+
+            const desc = document.getElementById('inputDesc').value.trim();
+            const lugar = document.getElementById('lugarObra').value.trim() || "No especificado";
+            const riesgo = document.getElementById('inputRiesgo').value;
+            
+            if (!desc) {
+                alert("Por favor escribe o dicta la observación antes de enviar.");
+                return;
+            }
+
+            const itemNum = observacionesRegistradas.length + 1;
+            const itemStr = itemNum < 10 ? "0" + itemNum : itemNum;
+            const fechaHoy = document.getElementById('fechaInspeccion').value;
+
+            const nuevaObs = {
+                item: itemStr,
+                fecha: fechaHoy,
+                lugar: lugar,
+                descripcion: desc,
+                clasificacion: riesgo, // Guardamos Alto / Medio / Bajo
+                foto: fotoActualBase64,
+                planAccion: "",
+                fechaCierre: ""
+            };
+
+            observacionesRegistradas.push(nuevaObs);
+            document.getElementById('contadorBadge').innerText = `${observacionesRegistradas.length} Ítems`;
+
+            const chatContainer = document.getElementById('chatContainer');
+            let htmlFoto = fotoActualBase64 ? `<img src="${fotoActualBase64}" class="w-28 h-28 object-cover rounded-lg mt-2 border border-sky-200">` : "";
+            
+            const userMsg = document.createElement('div');
+            userMsg.className = "flex items-start gap-2 justify-end";
+            userMsg.innerHTML = `
+                <div class="bg-cosapi-light p-3 rounded-2xl shadow-sm text-xs max-w-[85%] border border-sky-200 space-y-1">
+                    <p class="font-bold text-cosapi-dark">Ítem ${itemStr} Registrado [Riesgo: ${riesgo}][cite: 1]:</p>
+                    <p><strong>Lugar:</strong> ${lugar}</p>
+                    <p><strong>Obs:</strong> ${desc}</p>
+                    ${htmlFoto}
+                </div>
+                <div class="bg-gray-700 text-white rounded-full w-7 h-7 flex items-center justify-center text-xs font-bold shrink-0">👤</div>
+            `;
+            chatContainer.appendChild(userMsg);
+
+            // Limpiar inputs de observación
+            document.getElementById('inputDesc').value = "";
+            document.getElementById('inputFoto').value = "";
+            fotoActualBase64 = "";
+            document.getElementById('fileIndicator').style.display = "none";
+            
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Exportar Excel
+        function exportarExcel() {
+            if (observacionesRegistradas.length === 0) {
+                alert("Aún no hay registros de inspección.");
+                return;
+            }
+
+            let datos = [];
+            datos.push(["COSAPI S.A. - REGISTRO DE INSPECCIÓN DE SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE"]);
+            datos.push(["Responsable De La Inspección:", "Marco Antonio del Pino", "Cargo:", "Gerente de SSOMA"]);
+            datos.push(["Responsable Del Levantamiento:", document.getElementById('respLevantamiento').value || "N/A", "Cargo:", document.getElementById('cargoLevantamiento').value || "N/A"]);
+            datos.push(["Tipo de inspección:", document.getElementById('tipoInspeccion').value, "Fecha / Hora:", document.getElementById('fechaInspeccion').value + " " + document.getElementById('horaInspeccion').value]);
+            datos.push(["Lugar:", document.getElementById('lugarObra').value || "N/A"]);
+            datos.push([]);
+            datos.push(["Ítem", "Fecha", "Lugar", "Descripción De La Observación", "Clasificación (Riesgo)", "Plazo De Cierre", "Descripción del plan de acción", "Fecha de cierre"]);
+
+            observacionesRegistradas.forEach(obs => {
+                datos.push([
+                    obs.item,
+                    obs.fecha,
+                    obs.lugar,
+                    obs.descripcion,
+                    obs.clasificacion,
+                    "",
+                    obs.planAccion,
+                    obs.fechaCierre
+                ]);
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet(datos);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Inspeccion SSOMA");
+            XLSX.writeFile(wb, "COSAPI_Inspeccion_SSOMA.xlsx");
+        }
+
+        // Exportar PDF
+        function exportarPDF() {
+            if (observacionesRegistradas.length === 0) {
+                alert("Aún no hay registros de inspección.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'mm', 'a4');
+
+            doc.setFontSize(11);
+            doc.text("COSAPI S.A. - REGISTRO DE INSPECCIÓN DE SEGURIDAD, SALUD EN EL TRABAJO Y MEDIO AMBIENTE", 14, 12);
+            doc.setFontSize(8);
+            doc.text(`Responsable Inspección: Marco Antonio del Pino (Gerente SSOMA)`, 14, 17);
+            doc.text(`Resp. Levantamiento: ${document.getElementById('respLevantamiento').value || 'N/A'} (${document.getElementById('cargoLevantamiento').value || 'N/A'})`, 14, 22);
+            doc.text(`Lugar: ${document.getElementById('lugarObra').value || 'N/A'} | Fecha: ${document.getElementById('fechaInspeccion').value} ${document.getElementById('horaInspeccion').value}`, 150, 17);
+
+            let bodyData = observacionesRegistradas.map(obs => [
+                obs.item,
+                obs.fecha,
+                obs.lugar,
+                obs.descripcion,
+                obs.clasificacion,
+                obs.planAccion,
+                obs.fechaCierre
+            ]);
+
+            doc.autoTable({
+                startY: 26,
+                head: [['Ítem', 'Fecha', 'Lugar', 'Descripción De La Observación', 'Clasif. (Riesgo)', 'Plan de Acción', 'Fecha Cierre']],
+                body: bodyData,
+                theme: 'grid',
+                headStyles: { fillColor: [2, 132, 199] },
+                styles: { fontSize: 8 }
+            });
+
+            doc.save("COSAPI_Inspeccion_SSOMA.pdf");
+        }
+    </script>
+</body>
+</html>
