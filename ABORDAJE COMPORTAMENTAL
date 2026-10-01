@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abordaje Comportamental - SSOMA Cosapi (3 Apartados)</title>
+    <!-- Tailwind CSS y Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #e0f2fe; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="text-slate-700 antialiased flex justify-center min-h-screen p-0 sm:py-6">
+
+    <!-- Contenedor Principal Estilo Smartphone -->
+    <div class="w-full max-w-md bg-white min-h-screen sm:min-h-[950px] sm:rounded-3xl shadow-2xl border border-sky-100 flex flex-col justify-between overflow-hidden relative">
+        
+        <!-- Header Llamativo en Tonos Celestes / Azules -->
+        <header class="bg-gradient-to-r from-sky-500 via-sky-600 to-blue-600 p-4 pb-3 sticky top-0 z-50 shadow-md">
+            <div class="flex justify-between items-center">
+                <div>
+                    <span class="text-[9px] uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded-full text-sky-50 font-extrabold backdrop-blur-md">Ref: PG-SSOMA-06-F3</span>
+                    <h1 class="text-sm font-extrabold mt-1 tracking-tight text-white flex items-center gap-1.5">
+                        👁️ Abordaje Comportamental
+                    </h1>
+                </div>
+                <div class="text-right bg-white/15 px-2.5 py-1 rounded-xl backdrop-blur-md border border-white/20">
+                    <span class="text-[11px] text-sky-100 block font-semibold">Cosapi SSOMA</span>
+                </div>
+            </div>
+
+            <!-- Navegación por 3 Pestañas (Tabs) -->
+            <div class="grid grid-cols-3 gap-1.5 mt-3 bg-sky-900/20 p-1 rounded-xl backdrop-blur-md border border-white/20">
+                <button onclick="switchTab(1)" id="tabBtn1" class="py-1.5 text-[11px] font-bold rounded-lg bg-white text-sky-700 transition shadow-sm text-center">
+                    1. Datos
+                </button>
+                <button onclick="switchTab(2)" id="tabBtn2" class="py-1.5 text-[11px] font-bold rounded-lg text-sky-100 transition hover:text-white text-center">
+                    2. Básicos
+                </button>
+                <button onclick="switchTab(3)" id="tabBtn3" class="py-1.5 text-[11px] font-bold rounded-lg text-sky-100 transition hover:text-white text-center">
+                    3. Generales
+                </button>
+            </div>
+        </header>
+
+        <!-- Contenedor del Formulario -->
+        <main class="p-4 flex-1 pb-24 overflow-y-auto space-y-4 bg-sky-50/50">
+            
+            <!-- ================= APARTADO 1: DATOS GENERALES ================= -->
+            <div id="tab1" class="tab-content active space-y-4">
+                
+                <!-- Datos del Observador -->
+                <div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm space-y-3">
+                    <div class="flex items-center gap-2 text-sky-700 font-bold text-xs uppercase tracking-wider">
+                        <span>🕵️‍♂️</span> 1. Datos del Observador
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-sky-900">Nombre del Observador (Inspector SSOMA)</label>
+                        <input type="text" id="observadorNombre" placeholder="Ej. Yulisa Peralta" class="w-full mt-1 p-2.5 text-xs bg-sky-50/50 border border-sky-200 rounded-xl text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sky-900">Fecha</label>
+                            <input type="date" id="fechaObs" class="w-full mt-1 p-2.5 text-xs bg-sky-50/50 border border-sky-200 rounded-xl text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sky-900">Turno</label>
+                            <select id="turnoObs" class="w-full mt-1 p-2.5 text-xs bg-sky-50/50 border border-sky-200 rounded-xl text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                                <option value="Día">Día</option>
+                                <option value="Tarde">Tarde</option>
+                                <option value="Noche">Noche</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos del Observado -->
+                <div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm space-y-3">
+                    <div class="flex items-center gap-2 text-sky-700 font-bold text-xs uppercase tracking-wider">
+                        <span>👷‍♂️</span> 2. Datos del Trabajador Observado
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-sky-900">Especialidad del observado</label>
+                        <input type="text" id="especialidadObs" placeholder="Ej. Electricista, Mecánico..." class="w-full mt-1 p-2.5 text-xs bg-sky-50/50 border border-sky-200 rounded-xl text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-sky-900">Área de la observación</label>
+                        <input type="text" id="areaObs" placeholder="Ej. Topografía, Carpintería..." class="w-full mt-1 p-2.5 text-xs bg-sky-50/50 border border-sky-200 rounded-xl text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sky-900">Tiempo en el proyecto</label>
+                            <select id="tiempoProyecto" class="w-full mt-1 p-2.5 text-xs bg-sky-50/50 border border-sky-200 rounded-xl text-slate-800">
+                                <option value="Menor a 3 meses">Menor a 3 meses</option>
+                                <option value="Mayor a 3 meses">Mayor a 3 meses</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-sky-900">N° Trabajadores área</label>
+                            <input type="number" id="numTrabajadores" placeholder="Ej. 5" class="w-full mt-1 p-2.5 text-xs bg-sky-50/50 border border-sky-200 rounded-xl text-slate-800">
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="switchTab(2)" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold py-3 rounded-xl text-xs shadow-md shadow-sky-500/25 active:scale-[0.99] transition flex items-center justify-center gap-2">
+                    Siguiente: Comportamientos Básicos &rarr;
+                </button>
+            </div>
+
+            <!-- ================= APARTADO 2: COMPORTAMIENTOS BÁSICOS (1-5) ================= -->
+            <div id="tab2" class="tab-content space-y-4">
+                <div class="bg-sky-100 p-2.5 rounded-xl border border-sky-200 flex justify-around text-xs font-bold text-sky-900">
+                    <span>🟢 S = Seguro</span>
+                    <span>🔴 P = Preocupante</span>
+                </div>
+
+                <div class="text-xs font-extrabold text-sky-800 bg-sky-200/60 px-3 py-1.5 rounded-lg">
+                    Comportamientos Básicos (Ítems 1 al 5)
+                </div>
+
+                <div id="containerBasicos" class="space-y-3">
+                    <!-- Se inyecta vía JS -->
+                </div>
+
+                <div class="flex gap-2 pt-2">
+                    <button onclick="switchTab(1)" class="w-1/3 bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold py-3 rounded-xl text-xs border border-sky-200 transition">
+                        &larr; Volver
+                    </button>
+                    <button onclick="switchTab(3)" class="w-2/3 bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold py-3 rounded-xl text-xs shadow-md shadow-sky-500/25 transition">
+                        Siguiente: Generales &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= APARTADO 3: GENERALES Y ESPECÍFICOS (6-14) ================= -->
+            <div id="tab3" class="tab-content space-y-4">
+                <div class="bg-sky-100 p-2.5 rounded-xl border border-sky-200 flex justify-around text-xs font-bold text-sky-900">
+                    <span>🟢 S = Seguro</span>
+                    <span>🔴 P = Preocupante</span>
+                </div>
+
+                <div class="text-xs font-extrabold text-sky-800 bg-sky-200/60 px-3 py-1.5 rounded-lg">
+                    Comportamientos Generales y Específicos (Ítems 6 al 14)
+                </div>
+
+                <div id="containerGenerales" class="space-y-3">
+                    <!-- Se inyecta vía JS -->
+                </div>
+
+                <!-- Botones Finales -->
+                <div class="flex gap-2 pt-2">
+                    <button onclick="switchTab(2)" class="w-1/3 bg-sky-100 hover:bg-sky-200 text-sky-800 font-bold py-3 rounded-xl text-xs border border-sky-200 transition">
+                        &larr; Volver
+                    </button>
+                    <button onclick="submitAbordaje()" class="w-2/3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-xl text-xs shadow-md shadow-emerald-600/25 transition flex items-center justify-center gap-1.5">
+                        <span>💾</span> Guardar Abordaje
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-sky-900 text-sky-200 border-t border-sky-800 p-3 text-center text-[10px]">
+            Módulo SSOMA • Abordaje en 3 Apartados
+        </footer>
+
+    </div>
+
+    <!-- Script de Lógica -->
+    <script>
+        document.getElementById('fechaObs').valueAsDate = new Date();
+
+        const listaBasicos = [
+            { id: 1, text: "Tiene y hace uso adecuado de EPPs según actividad." },
+            { id: 2, text: "Observamos señalización adecuada, tarjetas de operatividad (según actividad)." },
+            { id: 3, text: "Observamos área ordenada y libre de obstáculos en el piso." },
+            { id: 4, text: "Observamos uso adecuado de herramientas según actividad (cables, cinta del mes)." },
+            { id: 5, text: "Observamos ergonomía (posturas, promueve pausas activas)." }
+        ];
+
+        const listaGenerales = [
+            { id: 6, text: "Observamos atención y concentración en la labor." },
+            { id: 7, text: "Observamos comunicación abierta y fluida entre el equipo." },
+            { id: 8, text: "Observamos interacción hombre / máquina (segregación)." },
+            { id: 9, text: "Existen accesos rastrillados." },
+            { id: 10, text: "Observamos uso adecuado de productos químicos (dejar en blanco si no aplica)." },
+            { id: 11, text: "Revisamos AST/ATS/IPERC, permisos, check list, conocimiento de PETS." },
+            { id: 12, text: "Conoce y realiza la correcta segregación de residuos de acuerdo al código de colores." },
+            { id: 13, text: "Identifica, manipula y almacena correctamente los materiales peligrosos." },
+            { id: 14, text: "Observamos adherencia a cumplir procedimientos, actitud proactiva y positiva." }
+        ];
+
+        const results = {};
+
+        function renderItems(list, containerId) {
+            const container = document.getElementById(containerId);
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-3.5 rounded-2xl border border-sky-100 shadow-sm space-y-2.5";
+                card.innerHTML = `
+                    <div class="flex items-start gap-2">
+                        <span class="bg-sky-500 text-white text-[11px] font-extrabold px-2 py-0.5 rounded-lg shadow-sm">${item.id}</span>
+                        <p class="text-xs font-semibold text-slate-800 leading-snug">${item.text}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <button type="button" onclick="setEvaluation(${item.id}, 'S')" id="btn_${item.id}_S" 
+                            class="border border-sky-200 rounded-xl py-1.5 text-xs font-bold text-sky-900 bg-sky-50/50 hover:bg-sky-100 transition">
+                            🟢 Seguro (S)
+                        </button>
+                        <button type="button" onclick="setEvaluation(${item.id}, 'P')" id="btn_${item.id}_P" 
+                            class="border border-sky-200 rounded-xl py-1.5 text-xs font-bold text-sky-900 bg-sky-50/50 hover:bg-sky-100 transition">
+                            🔴 Preocupante (P)
+                        </button>
+                    </div>
+                    <div>
+                        <input type="text" id="comentario_${item.id}" placeholder="Comentarios / Observación..." class="w-full p-2 bg-sky-50/30 border border-sky-200 rounded-xl text-[11px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        renderItems(listaBasicos, 'containerBasicos');
+        renderItems(listaGenerales, 'containerGenerales');
+
+        function switchTab(tabNumber) {
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`tab${i}`).classList.remove('active');
+                document.getElementById(`tabBtn${i}`).className = "py-1.5 text-[11px] font-bold rounded-lg text-sky-100 transition hover:text-white text-center";
+            }
+
+            document.getElementById(`tab${tabNumber}`).classList.add('active');
+            document.getElementById(`tabBtn${tabNumber}`).className = "py-1.5 text-[11px] font-bold rounded-lg bg-white text-sky-700 transition shadow-sm text-center";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setEvaluation(id, type) {
+            results[id] = type;
+            const btnS = document.getElementById(`btn_${id}_S`);
+            const btnP = document.getElementById(`btn_${id}_P`);
+
+            if (type === 'S') {
+                btnS.className = "border border-emerald-500 rounded-xl py-1.5 text-xs font-bold text-white bg-emerald-600 shadow-sm transition scale-[1.02]";
+                btnP.className = "border border-sky-200 rounded-xl py-1.5 text-xs font-bold text-sky-900 bg-sky-50/50 hover:bg-sky-100 transition";
+            } else {
+                btnP.className = "border border-rose-500 rounded-xl py-1.5 text-xs font-bold text-white bg-rose-600 shadow-sm transition scale-[1.02]";
+                btnS.className = "border border-sky-200 rounded-xl py-1.5 text-xs font-bold text-sky-900 bg-sky-50/50 hover:bg-sky-100 transition";
+            }
+        }
+
+        function submitAbordaje() {
+            const observador = document.getElementById('observadorNombre').value;
+            const area = document.getElementById('areaObs').value;
+
+            if (!observador) {
+                alert("Por favor ingrese el nombre del Observador en el Apartado 1.");
+                switchTab(1);
+                return;
+            }
+            if (!area) {
+                alert("Por favor ingrese el área de la observación en el Apartado 1.");
+                switchTab(1);
+                return;
+            }
+            alert(`¡Excelente! Abordaje Comportamental registrado con éxito por: ${observador}.`);
+        }
+    </script>
+</body>
+</html>
